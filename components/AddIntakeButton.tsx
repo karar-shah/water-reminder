@@ -1,7 +1,7 @@
 export default function AddIntakeButton({ onClick }: { onClick: () => void }) {
   return (
     <button
-      className="fixed bottom-5 right-5 bg-gradient-to-tr from-purple-400 to-blue-400 p-4 rounded-full shadow-xl hover:scale-110 active:scale-95 transition-transform"
+      className="fixed bottom-5 right-5 bg-[#8EB1E8] p-5 rounded-full shadow-xl hover:opacity-90 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-[#4066A0]"
       onClick={onClick}
       aria-label="Add Intake"
     >

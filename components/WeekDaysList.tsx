@@ -1,11 +1,12 @@
 export default function WeekDaysList({ weekLogs, goal }: { weekLogs: { day: string, date: string, intake: number }[], goal: number }) {
   return (
-    <div className="flex px-2 justify-between w-full max-w-md mt-2">
+    <div className="flex justify-center gap-2 mt-4 px-4">
       {weekLogs.map((d, idx) => (
-        <div key={d.date} className={`flex flex-col items-center rounded-full px-2 py-2 transition-all
-         ${d.intake >= goal ? 'bg-gradient-to-tr from-purple-200 to-lavender-200 shadow' : 'bg-[#F3F3FA]'}`}>
-          <span className={`text-[11px] ${d.intake >= goal ? 'font-bold text-blue-950' : 'text-[#999AC6]'}`}>{d.day}</span>
-          <span className={`text-lg font-medium ${d.intake >= goal ? 'text-blue-600' : 'text-[#413C6D]'}`}>{new Date(d.date).getDate()}</span>
+        <div key={d.date} className={`flex flex-col items-center p-3 rounded-xl transition-all min-w-[50px]
+         ${d.intake >= goal ? 'bg-[#8EB1E8] text-white shadow-md' : 'bg-gray-100 text-[#4066A0]'}`}>
+          <span className="text-xs font-medium">{d.day.slice(0,3)}</span>
+          <span className="text-lg font-bold">{new Date(d.date).getDate()}</span>
+          <span className="text-xs">{Math.round(d.intake / goal * 100)}%</span>
         </div>
       ))}
     </div>

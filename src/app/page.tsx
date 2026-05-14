@@ -1,15 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useWaterTracker from "../../hooks/useWaterTracker";
 import Header from "../../components/Header";
 import TodayCard from "../../components/TodayCard";
 import WeekDaysList from "../../components/WeekDaysList";
-import AddIntakeButton from "../../components/AddIntakeButton";
 import AddIntakeModal from "../../components/AddIntakeModal";
+import BottomNav from "../../components/BottomNav";
 
 export default function HomePage() {
   const { todayLog, weekLogs, goal, addIntake } = useWaterTracker();
   const [modalOpen, setModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNotify = () => {
     if ('Notification' in window && Notification.permission === 'granted') {
@@ -23,14 +28,22 @@ export default function HomePage() {
     }
   };
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#8EB1E8] flex items-center justify-center">
+        <div className="text-white text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#A18CD1] via-[#FBC2EB] to-[#C9D6FF] flex flex-col">
+    <div className="min-h-screen bg-[#8EB1E8] flex flex-col pb-20">
       <Header onNotify={handleNotify} />
-      <main className="flex flex-col items-center px-2 gap-4 mt-4">
+      <main className="flex flex-col items-center px-4 gap-6 mt-6 flex-1">
         <TodayCard intake={todayLog.intake} goal={goal} />
         <WeekDaysList weekLogs={weekLogs} goal={goal} />
       </main>
-      <AddIntakeButton onClick={() => setModalOpen(true)} />
+      <BottomNav onAdd={() => setModalOpen(true)} />
       <AddIntakeModal open={modalOpen} setOpen={setModalOpen} onSubmit={addIntake} />
     </div>
   );

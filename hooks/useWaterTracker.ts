@@ -11,26 +11,37 @@ function todayDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function getInitialLogs() {
-  if (typeof window === "undefined") return [];
+function getSavedState<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
   try {
-    return JSON.parse(localStorage.getItem("waterLogs") || "[]");
+    return JSON.parse(localStorage.getItem(key) || "null") ?? fallback;
   } catch {
-    return [];
+    return fallback;
   }
 }
 
 export default function useWaterTracker() {
-  const [logs, setLogs] = useState<WaterLog[]>(getInitialLogs);
+  const [logs, setLogs] = useState<WaterLog[]>([]);
   const [profile, setProfile] = useState({
     name: "Karar",
     goal: DAILY_GOAL,
   });
 
-  // Save logs to localStorage
+  // Load saved state from localStorage only on the client.
   useEffect(() => {
+    setLogs(getSavedState<WaterLog[]>("waterLogs", []));
+    setProfile(getSavedState<{ name: string; goal: number }>("waterProfile", {
+      name: "Karar",
+      goal: DAILY_GOAL,
+    }));
+  }, []);
+
+  // Save logs and profile to localStorage after hydration.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.setItem("waterLogs", JSON.stringify(logs));
-  }, [logs]);
+    localStorage.setItem("waterProfile", JSON.stringify(profile));
+  }, [logs, profile]);
 
   // --- Daily value helpers ---
   const addIntake = (ml: number) => {
@@ -58,7 +69,7 @@ export default function useWaterTracker() {
       const log = logs.find((l) => l.date === iso);
       days.push({
         date: iso,
-        day: date.toLocaleDateString(undefined, { weekday: "short" }),
+        day: date.toLocaleDateString("en-US", { weekday: "short" }),
         intake: log?.intake || 0,
       });
     }

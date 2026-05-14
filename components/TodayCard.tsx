@@ -3,33 +3,43 @@ export default function TodayCard({ intake, goal }: { intake: number; goal: numb
   const percent = Math.min(1, intake / goal);
   const today = new Date();
 
+  const radius = 60;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (percent * circumference);
+
   return (
-    <div className="bg-[#FFFFFFBB] rounded-2xl shadow-lg p-5 w-full max-w-md mt-4 flex flex-col items-center">
-      <div className="text-md text-[#6E62A2] mb-2 font-semibold">
-        Today, {today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+    <div className="bg-white rounded-3xl shadow-lg p-6 w-full max-w-sm mx-auto mt-4">
+      <div className="text-center mb-4">
+        <div className="text-sm text-[#4066A0] font-medium">Today</div>
+        <div className="text-lg text-[#1A2340] font-semibold">{today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</div>
       </div>
-      {/* Animated wave SVG */}
-      <div className="relative flex items-end h-32 w-32">
-        <svg viewBox="0 0 120 120" className="absolute z-0">
-          <defs>
-            <linearGradient id="wave" x1="0" x2="0" y1="0" y2="1">
-              <stop stopColor="#A18CD1" />
-              <stop offset="100%" stopColor="#C9D6FF"/>
-            </linearGradient>
-          </defs>
-          <path
-              d={`M0,${120-(percent*90)}
-                  Q30,${110-(percent*60)}
-                  60,${120-(percent*80)}
-                  Q90,${130-(percent*80)}
-                  120,${120-(percent*90)}
-                  V120 H0 Z`}
-              fill="url(#wave)"
+      <div className="relative flex items-center justify-center h-40 w-40 mx-auto">
+        <svg className="absolute transform -rotate-90" width="160" height="160" viewBox="0 0 160 160">
+          <circle
+            cx="80"
+            cy="80"
+            r={radius}
+            stroke="#E0E7EF"
+            strokeWidth="8"
+            fill="none"
+          />
+          <circle
+            cx="80"
+            cy="80"
+            r={radius}
+            stroke="#8EB1E8"
+            strokeWidth="8"
+            fill="none"
+            strokeDasharray={strokeDasharray}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            className="transition-all duration-500"
           />
         </svg>
-        <div className="relative z-10 w-full text-center pt-16">
-          <strong className="text-2xl text-[#43406A]">{Math.floor(percent*goal)}ml</strong>
-          <div className="text-xs text-[#7A7C90]">of {goal}ml</div>
+        <div className="absolute text-center">
+          <div className="text-3xl font-bold text-[#1A2340]">{Math.floor(percent * 100)}%</div>
+          <div className="text-sm text-[#4066A0]">{intake}ml / {goal}ml</div>
         </div>
       </div>
     </div>
